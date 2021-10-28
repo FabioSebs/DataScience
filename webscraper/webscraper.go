@@ -1,4 +1,4 @@
-package main
+package webscraper
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ type Fish struct {
 	Region  string `json:"region"`
 }
 
-func main() {
+func Webscraper() {
 	fishStruct := make([]Fish, 0)
 	defer fmt.Println(fishStruct)
 

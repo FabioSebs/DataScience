@@ -1,7 +1,7 @@
 package main
 
-import "github.com/FabioSebs/DataScience/webscraper"
+import "fabrzy/webscraper"
 
 func main() {
-	webscraper.Colly()
+	webscraper.Webscraper()
 }
