@@ -55,5 +55,5 @@ func writeJSON(data []Fish) {
 		return
 	}
 
-	_ = ioutil.WriteFile("endangeredFish.json", file, 0644)
+	_ = ioutil.WriteFile("webscraper/endangeredFish.json", file, 0644)
 }
