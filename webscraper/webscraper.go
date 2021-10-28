@@ -1,43 +1,59 @@
-package webscraper
+package main
 
 import (
-	"encoding/csv"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
-	"os"
 	"strconv"
+	"strings"
 
-	"github.com/gocolly/colly/v2"
+	"github.com/gocolly/colly"
 )
 
-func Colly() {
-	// CSV File
-	f := "fish_endangered.csv"
-	file, err := os.Create(f)
-	if err != nil {
-		log.Fatal("error!")
-	}
-	defer file.Close()
+type Fish struct {
+	Species string `json:"species"`
+	Status  string `json:"status"`
+	Year    string `json:"year"`
+	Region  string `json:"region"`
+}
 
-	// Writer
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
+func main() {
+	fishStruct := make([]Fish, 0)
+	defer fmt.Println(fishStruct)
 
-	//Colly
-	c := colly.NewCollector(
-		colly.AllowedDomains("https://www.fisheries.noaa.gov/species-directory/threatened-endangered"),
+	collector := colly.NewCollector(
+		colly.AllowedDomains("fisheries.noaa.gov", "www.fisheries.noaa.gov"),
 	)
 
-	for i := 2; i < 6; i++ {
-		fmt.Printf("Scraping Page: %d\n", i)
-		c.Visit("https://www.fisheries.noaa.gov/species-directory/threatened-endangered?title=&species_category=any&species_status=any&regions=all&items_per_page=25&page=" + strconv.Itoa(i) + "&sort=")
-	}
-
-	c.OnHTML(".species-directory__headers--8col", func(e *colly.HTMLElement) {
-		writer.Write([]string{
-			e.ChildText("a"),
-		})
+	collector.OnHTML("div.species-directory__species--8col", func(element *colly.HTMLElement) {
+		species := element.DOM
+		fish := Fish{
+			Species: species.Find("div.species-directory__species-title--name").Text(),
+			Status:  strings.TrimSuffix(strings.TrimSpace(species.Find("div.species-directory__species-status-row").Find("div.species-directory__species-status").Text()), "\n"),
+			Year:    strings.TrimSuffix(strings.TrimSpace(species.Find("div.species-directory__species-status-row").Find("div.species-directory__species-year").Text()), "\n"),
+			Region:  strings.TrimSuffix(strings.TrimSpace(species.Find("div.species-directory__species-status-row").Find("div.species-directory__species-region").Text()), "\n"),
+		}
+		fishStruct = append(fishStruct, fish)
 	})
 
-	log.Println("Scraping complete")
+	collector.OnRequest(func(request *colly.Request) {
+		fmt.Println("Visiting", request.URL.String())
+	})
+
+	for x := 1; x <= 5; x++ {
+		collector.Visit("https://www.fisheries.noaa.gov/species-directory/threatened-endangered?title=&species_category=any&species_status=any&regions=all&items_per_page=25&page=" + strconv.Itoa(x) + "&sort=")
+	}
+
+	writeJSON(fishStruct)
+}
+
+func writeJSON(data []Fish) {
+	file, err := json.MarshalIndent(data, "", " ")
+	if err != nil {
+		log.Println("Unable to create JSON file")
+		return
+	}
+
+	_ = ioutil.WriteFile("endangeredFish.json", file, 0644)
 }
