@@ -1,16 +1,23 @@
 package main
 
 import (
+	"fabrzy/data/fish_boats"
 	"fabrzy/data/fish_consumption"
+	"fabrzy/data/fish_employment"
 	"fabrzy/webscraper"
 )
 
 // https://go-echarts.github.io/go-echarts/docs/line
 
 func main() {
+	fish_employment.GetData()
+	// Getting Endangered Fish from Webscraper
 	// webscraper.Webscraper()
 	// webscraper.ReadJSON()
-	completed := make(chan bool, 2)
+
+	//Fish Boats Data
+
+	completed := make(chan bool, 3)
 
 	go func() {
 		webscraper.GeneratePie()
@@ -22,6 +29,12 @@ func main() {
 		completed <- true
 	}()
 
+	go func() {
+		fish_boats.FishBoatsOverTime()
+		completed <- true
+	}()
+
+	<-completed
 	<-completed
 	<-completed
 }
