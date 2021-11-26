@@ -9,8 +9,10 @@ import (
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-gota/gota/dataframe"
 )
 
+// OPENS AND READS CSV AND USES UTILITY FUNCTION TO RETURN DATA BASED ON YEAR PASSED IN TO FUNCTION
 func GetCountriesFC(country string) [][]string {
 	//Reading CSV File
 	f, err := os.Open("./data/fish_consumption/fishconsumption.csv")
@@ -36,6 +38,20 @@ func GetCountriesFC(country string) [][]string {
 	return FilterSlice(data, country)
 }
 
+// OPENS AND READS CSV AND RETURNS DATAFRAME
+func GetDataframe() dataframe.DataFrame {
+	f, err := os.Open("./data/fish_consumption/fishconsumption.csv")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	df := dataframe.ReadCSV(f)
+
+	return df
+}
+
+// UTILITY FUNCTION THAT RETURNS 2D SLICE BASED ON COUNTRY PASSED IN
 func FilterSlice(slice [][]string, country string) [][]string {
 	filtered := [][]string{}
 	for i, v := range slice {
@@ -46,6 +62,7 @@ func FilterSlice(slice [][]string, country string) [][]string {
 	return filtered
 }
 
+// GO E CHART FUNCTIONS
 func ConsumptionOverTime(country string, additional ...string) {
 	if len(additional) == 0 {
 		bar := charts.NewBar()

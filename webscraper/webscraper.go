@@ -14,6 +14,7 @@ import (
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-gota/gota/dataframe"
 	"github.com/gocolly/colly"
 )
 
@@ -28,11 +29,12 @@ type Fish struct {
 	Region  string `json:"region"`
 }
 
+// USING GO COLLY TO WEBSCRAPE DATA
 func Webscraper() {
+	// REGULAR EXPRESSION TO CLEAN THE DATA
 	space := regexp.MustCompile(`\s+`)
 
 	fishStruct := make([]Fish, 0)
-	defer fmt.Println(fishStruct)
 
 	collector := colly.NewCollector(
 		colly.AllowedDomains("fisheries.noaa.gov", "www.fisheries.noaa.gov"),
@@ -79,13 +81,17 @@ func ReadJSON() Fishes {
 	}
 	byteValue, _ := ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &fishies.Data)
-	// for i := 0; i < len(fishies.Data); i++ {
-	// 	fmt.Println("Species " + fishies.Data[i].Species)
-	// 	fmt.Println("Status " + fishies.Data[i].Status)
-	// 	fmt.Println("Year " + fishies.Data[i].Year)
-	// 	fmt.Println("Region " + fishies.Data[i].Region)
-	// }
 	return fishies
+}
+
+func GetDataframe() dataframe.DataFrame {
+	file, err := os.Open("./webscraper/endangeredFish.json")
+	defer file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	df := dataframe.ReadJSON(file)
+	return df
 }
 
 func generatePieItems(key string) []opts.PieData {

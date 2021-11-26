@@ -11,14 +11,18 @@ import (
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-gota/gota/dataframe"
 )
 
+// OPENS AND READS CSV FILE AND RETURNS AS 2D SLICE
 func GetData(year string) [][]string {
 	f, err := os.Open("./data/fish_boats/" + year + ".csv")
 	data := [][]string{}
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	reader := csv.NewReader(f)
 
 	for {
@@ -32,7 +36,19 @@ func GetData(year string) [][]string {
 
 		data = append(data, row)
 	}
+
 	return data
+}
+
+func GetDataframe(year string) dataframe.DataFrame {
+	f, err := os.Open("./data/fish_boats/" + year + ".csv")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	df := dataframe.ReadCSV(f)
+	return df
 }
 
 func GetTotalBoats(country string, data [][]string) int {

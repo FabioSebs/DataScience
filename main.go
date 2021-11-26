@@ -5,18 +5,18 @@ import (
 	"fabrzy/data/fish_consumption"
 	"fabrzy/data/fish_employment"
 	"fabrzy/data/fish_prices"
+	"fabrzy/data/merging"
 	"fabrzy/webscraper"
 )
 
 // https://go-echarts.github.io/go-echarts/docs/line
 
 func main() {
+	// Checking Dataframes
+	merging.GetAllDataframes()
+	merging.GetFishConsID()
 
-	// Getting Endangered Fish from Webscraper
-	// webscraper.Webscraper()
-	// webscraper.ReadJSON()
-
-	//Fish Boats Data
+	//Visualizations
 
 	completed := make(chan bool, 5)
 

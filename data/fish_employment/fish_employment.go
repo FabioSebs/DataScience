@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-gota/gota/dataframe"
 )
 
 func GetEmploymentData(country string) [][]string {
@@ -35,9 +36,18 @@ func GetEmploymentData(country string) [][]string {
 	return FilterSlice(data, country)
 }
 
-func FilterSlice(slice [][]string, country string) [][]string {
+func GetDataframe() dataframe.DataFrame {
+	f, err := os.Open("./data/fish_employment/employed-fisheries-aquaculture.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	df := dataframe.ReadCSV(f)
+	return df
+}
+
+func FilterSlice(datset [][]string, country string) [][]string {
 	filtered := [][]string{}
-	for _, v := range slice {
+	for _, v := range datset {
 		if v[0] == country {
 			filtered = append(filtered, v)
 		}
@@ -88,7 +98,7 @@ func generateBarItems(data [][]string) []opts.BarData {
 	items := make([]opts.BarData, 0)
 
 	for _, v := range data {
-		items = append(items, opts.BarData{Value: v[2] + v[3]})
+		items = append(items, opts.BarData{Value: v[2]})
 	}
 
 	return items
