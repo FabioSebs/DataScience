@@ -4,8 +4,6 @@ import (
 	"fabrzy/data/fish_boats"
 	"fabrzy/data/fish_consumption"
 	"fabrzy/data/fish_employment"
-	"fabrzy/data/fish_prices"
-	"fabrzy/data/merging"
 	"fabrzy/webscraper"
 )
 
@@ -13,41 +11,19 @@ import (
 
 func main() {
 	// Checking Dataframes
-	merging.GetAllDataframes()
-	merging.GetFishConsID()
+	// merging.GetAllDataframes()
+	// merging.GetFishConsID()
 
 	//Visualizations
 
-	completed := make(chan bool, 5)
+	webscraper.GeneratePie()
 
-	go func() {
-		webscraper.GeneratePie()
-		completed <- true
-	}()
+	fish_consumption.ConsumptionOverTime("Asia", "Afghanistan", "Africa", "Americas", "France", "India", "Japan")
 
-	go func() {
-		fish_consumption.ConsumptionOverTime("Asia", "Afghanistan", "Africa", "Americas", "France", "India", "Japan")
-		completed <- true
-	}()
+	fish_boats.FishBoatsOverTime()
 
-	go func() {
-		fish_boats.FishBoatsOverTime()
-		completed <- true
-	}()
+	// fish_prices.GenerateFishPrice()
 
-	go func() {
-		fish_prices.GenerateFishPrice()
-		completed <- true
-	}()
+	fish_employment.EmploymentOverTime("Africa", "Americas", "Asia", "Europe", "Oceania", "World")
 
-	go func() {
-		fish_employment.EmploymentOverTime("Africa", "Americas", "Asia", "Europe", "Oceania", "World")
-		completed <- true
-	}()
-
-	<-completed
-	<-completed
-	<-completed
-	<-completed
-	<-completed
 }

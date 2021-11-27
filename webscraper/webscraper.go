@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"regexp"
 	"strconv"
@@ -27,6 +26,9 @@ type Fish struct {
 	Status  string `json:"status"`
 	Year    string `json:"year"`
 	Region  string `json:"region"`
+}
+
+type FishDF struct {
 }
 
 // USING GO COLLY TO WEBSCRAPE DATA
@@ -72,6 +74,7 @@ func writeJSON(data []Fish) {
 	_ = ioutil.WriteFile("webscraper/endangeredFish.json", file, 0644)
 }
 
+// UTILITY FUNCTION USED FOR GO E CHARTS
 func ReadJSON() Fishes {
 	var fishies Fishes
 	file, err := os.Open("./webscraper/endangeredFish.json")
@@ -81,9 +84,16 @@ func ReadJSON() Fishes {
 	}
 	byteValue, _ := ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &fishies.Data)
+	// for i := 0; i < len(fishies.Data); i++ {
+	// 	fmt.Println("Species " + fishies.Data[i].Species)
+	// 	fmt.Println("Status " + fishies.Data[i].Status)
+	// 	fmt.Println("Year " + fishies.Data[i].Year)
+	// 	fmt.Println("Region " + fishies.Data[i].Region)
+	// }
 	return fishies
 }
 
+// OPENS AND READS CSV AND RETURNS DATAFRAME
 func GetDataframe() dataframe.DataFrame {
 	file, err := os.Open("./webscraper/endangeredFish.json")
 	defer file.Close()
@@ -160,8 +170,6 @@ func GeneratePie() {
 		pieBase("Region"),
 		pieBase("Year"),
 	)
-	http.HandleFunc("/regions", func(rw http.ResponseWriter, r *http.Request) {
-		page.Render(rw)
-	})
-	http.ListenAndServe(":8081", nil)
+	f, _ := os.Create("endangeredFish.html")
+	page.Render(f)
 }

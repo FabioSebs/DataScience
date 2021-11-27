@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
@@ -73,7 +72,7 @@ func ConsumptionOverTime(country string, additional ...string) {
 		//Setting Instance of Bar
 		bar.SetXAxis(getX(GetCountriesFC(country))).AddSeries("Values", generateBarItems(GetCountriesFC(country)))
 
-		e, _ := os.Create("foodConsumption" + country + ".html")
+		e, _ := os.Create("fishConsumption" + country + ".html")
 		bar.Render(e)
 		return
 	} else {
@@ -87,19 +86,22 @@ func ConsumptionOverTime(country string, additional ...string) {
 			bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
 				Title:    "The Rise in Seafood Consumption in " + countries[i],
 				Subtitle: "Food supply quantity (kg/capita/yr)",
-			}))
+			}),
+				charts.WithColorsOpts(opts.Colors{opts.HSLColor(20, 80, 50)}),
+				charts.WithDataZoomOpts(opts.DataZoom{}),
+			)
 			//Setting Instance of Bar
 			bar.SetXAxis(getX(GetCountriesFC(country))).AddSeries("Values", generateBarItems(GetCountriesFC(countries[i])))
 
 			bars = append(bars, bar)
 		}
-		http.HandleFunc("/foodcons", func(rw http.ResponseWriter, r *http.Request) {
-			for _, v := range bars {
-				v.Render(rw)
-			}
-		})
-		http.ListenAndServe(":8081", nil)
-		return
+
+		f, _ := os.Create("fishconsumption.html")
+
+		for _, v := range bars {
+			v.Render(f)
+		}
+
 	}
 
 }

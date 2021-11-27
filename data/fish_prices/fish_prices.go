@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
@@ -154,7 +153,7 @@ func generateLineItems(data [][]string) []opts.LineData {
 	return items
 }
 
-func httpserver(w http.ResponseWriter, _ *http.Request) {
+func GenerateFishPrice() {
 	years := []string{}
 
 	for i := 1; i <= 30; i++ {
@@ -171,10 +170,9 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 		AddSeries("Prices", generateLineItems(GetData())).
 		SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: true}))
 
-	line.Render(w)
+	f, _ := os.Create("fishprices.html")
+
+	line.Render(f)
 }
 
-func GenerateFishPrice() {
-	http.HandleFunc("/fishprice", httpserver)
-	http.ListenAndServe(":8081", nil)
-}
+//SRC : https://data.worldbank.org/indicator/ER.FSH.CAPT.MT

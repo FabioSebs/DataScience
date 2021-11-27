@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
@@ -12,6 +11,7 @@ import (
 	"github.com/go-gota/gota/dataframe"
 )
 
+// OPENS AND READS CSV AND RETURNS 2D ARRAY DEPENDING ON COUNTRY USING UTILITY FUNCTION
 func GetEmploymentData(country string) [][]string {
 	f, err := os.Open("./data/fish_employment/employed-fisheries-aquaculture.csv")
 	if err != nil {
@@ -36,6 +36,7 @@ func GetEmploymentData(country string) [][]string {
 	return FilterSlice(data, country)
 }
 
+// OPEN AND READS CSV AND RETURNS AS DATAFRAME
 func GetDataframe() dataframe.DataFrame {
 	f, err := os.Open("./data/fish_employment/employed-fisheries-aquaculture.csv")
 	if err != nil {
@@ -45,6 +46,7 @@ func GetDataframe() dataframe.DataFrame {
 	return df
 }
 
+// RETURNS DATA BASED ON COUNTRY PASSED IN
 func FilterSlice(datset [][]string, country string) [][]string {
 	filtered := [][]string{}
 	for _, v := range datset {
@@ -55,6 +57,7 @@ func FilterSlice(datset [][]string, country string) [][]string {
 	return filtered
 }
 
+// GO ECHARTS CODE
 func EmploymentOverTime(country string, additional ...string) {
 	if len(additional) == 0 {
 		bar := charts.NewBar()
@@ -64,7 +67,7 @@ func EmploymentOverTime(country string, additional ...string) {
 		//Setting Instance of Bar
 		bar.SetXAxis(getX(GetEmploymentData(country))).AddSeries("Values", generateBarItems(GetEmploymentData(country)))
 
-		e, _ := os.Create("foodConsumption" + country + ".html")
+		e, _ := os.Create("employment" + country + ".html")
 		bar.Render(e)
 		return
 	} else {
@@ -77,19 +80,20 @@ func EmploymentOverTime(country string, additional ...string) {
 			bar := charts.NewBar()
 			bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
 				Title: "The Rise in Employment -" + countries[i],
-			}))
+			}),
+				charts.WithColorsOpts(opts.Colors{opts.HSLColor(130, 40, 60)}),
+				charts.WithDataZoomOpts(opts.DataZoom{}),
+			)
 			//Setting Instance of Bar
 			bar.SetXAxis(getX(GetEmploymentData(country))).AddSeries("Values", generateBarItems(GetEmploymentData(countries[i])))
 
 			bars = append(bars, bar)
 		}
-		http.HandleFunc("/employment", func(rw http.ResponseWriter, r *http.Request) {
-			for _, v := range bars {
-				v.Render(rw)
-			}
-		})
-		http.ListenAndServe(":8081", nil)
-		return
+
+		f, _ := os.Create("fishemployment.html")
+		for _, v := range bars {
+			v.Render(f)
+		}
 	}
 
 }
