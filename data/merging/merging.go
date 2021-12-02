@@ -10,10 +10,12 @@ import (
 	"os"
 
 	"github.com/go-gota/gota/dataframe"
+	"github.com/go-gota/gota/series"
 )
 
-// MERGING EVERYTHING TOGETHER
+// MERGING EVERYTHING TOGETHER WITH GOTA 
 func GetAllDataframes() {
+	// LOADING THE DATA FILES
 	// df1 := GetFishBoats()  			     					//Country,Year,Total,Non-Powered Boat,Powered-Boat
 	df2 := fish_consumption.GetDataframe() //Country,Code,Year,Fish
 	// df3 := fish_employment.GetDataframe() 					//Country,Year,Fisheries
@@ -21,38 +23,34 @@ func GetAllDataframes() {
 	// df5 := webscraper.GetDataframe()      					//Species,Status,Year,Region
 	df6 := fish_catches.GetDataframe() //Country,Code,Year,Production (metric tons),Captures (metric tons)
 
-	//Dropping Un Wanted Columns
+	//DROPPING UNWANTED COLUMNS
 	// df1 = df1.Drop(3) // Non-Powered
 	// df1 = df1.Drop(4) // Powered
 	df2 = df2.Drop(1) // Code
 	df4 = df4.Drop(1) // Code
 	df6 = df6.Drop(1) // Code
-	// Renaming Columns
+
+	//RENAMING COLUMNS
 	df2 = df2.Rename("Fish-Consumption", "Fish")
 	df6 = df6.Rename("Production", "Production (metric tons)")
 	df6 = df6.Rename("Captures", "Captures (metric tons)")
 	// df1 = df1.Rename("Total-Boats", "Total")
 
-	// Joining Dataframes Horizontally
+	//JOINING DATAFRAMES HORIZONTALLY 
 	// df1 = df1.InnerJoin(df2, "Country", "Year")
 	// df1 = df1.InnerJoin(df3, "Year", "Country")
 	// df1 = df1.InnerJoin(df4, "Year")
 	// df1 = df1.InnerJoin(df5, "Year")
 	df4 = df4.InnerJoin(df2, "Country", "Year")
 	df4 = df4.InnerJoin(df6, "Country", "Year")
-
-	//Arranging and Sorting
-	// df1 = df1.Arrange(
-	// 	dataframe.Sort("Year"),
-	// )
-
-	//Analyzing
+	
+	//ANALYZING
 	fmt.Println(df4)
 	fmt.Println(df4.Dims())
 	fmt.Println(df4.Names())
 	fmt.Println(df4.Describe())
 
-	//Writing to CSV
+	//WRITING TO CSV
 	f, err := os.Create("./data/merging/merged.csv")
 	if err != nil {
 		log.Fatal(err)

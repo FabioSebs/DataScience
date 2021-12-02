@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fabrzy/data/cleaning"
 	"fabrzy/data/fish_boats"
 	"fabrzy/data/fish_consumption"
 	"fabrzy/data/fish_employment"
@@ -25,5 +26,6 @@ func main() {
 	// fish_prices.GenerateFishPrice()
 
 	fish_employment.EmploymentOverTime("Africa", "Americas", "Asia", "Europe", "Oceania", "World")
-
+	
+	cleaning.Cleaning()
 }
