@@ -6,6 +6,7 @@ import (
 	"fabrzy/data/fish_consumption"
 	"fabrzy/data/fish_employment"
 	"fabrzy/webscraper"
+	"fmt"
 )
 
 // https://go-echarts.github.io/go-echarts/docs/line
@@ -27,5 +28,6 @@ func main() {
 
 	fish_employment.EmploymentOverTime("Africa", "Americas", "Asia", "Europe", "Oceania", "World")
 	
-	cleaning.Cleaning()
+	df := cleaning.Cleaning()
+	fmt.Println(df)
 }
