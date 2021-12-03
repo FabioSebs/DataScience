@@ -4,8 +4,8 @@ go 1.16
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
-	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.7.2
-	github.com/adrg/go-wkhtmltopdf v0.3.0
+	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.7.2 // indirect
+	github.com/adrg/go-wkhtmltopdf v0.3.0 // indirect
 	github.com/antchfx/htmlquery v1.2.4 // indirect
 	github.com/antchfx/xmlquery v1.3.8 // indirect
 	github.com/go-echarts/go-echarts/v2 v2.2.4
