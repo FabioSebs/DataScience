@@ -5,8 +5,8 @@ import (
 	"fabrzy/data/fish_boats"
 	"fabrzy/data/fish_consumption"
 	"fabrzy/data/fish_employment"
+	ml "fabrzy/machine_learning"
 	"fabrzy/webscraper"
-	"fmt"
 )
 
 // https://go-echarts.github.io/go-echarts/docs/line
@@ -27,7 +27,8 @@ func main() {
 	// fish_prices.GenerateFishPrice()
 
 	fish_employment.EmploymentOverTime("Africa", "Americas", "Asia", "Europe", "Oceania", "World")
-	
-	df := cleaning.Cleaning()
-	fmt.Println(df)
+
+	cleaning.Cleaning()
+
+	ml.LinearRegression()
 }

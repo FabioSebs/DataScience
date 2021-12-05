@@ -4,11 +4,14 @@ import (
 	"context"
 	"log"
 	"os"
+
 	"github.com/go-gota/gota/dataframe"
+	df "github.com/rocketlaunchr/dataframe-go"
+	"github.com/rocketlaunchr/dataframe-go/exports"
 	"github.com/rocketlaunchr/dataframe-go/imports"
 )
 
-func Cleaning() *dataframe.Dataframe {
+func Cleaning() *df.DataFrame {
 	ctx := context.TODO()
 	// OPENING FILE
 	f, err := os.Open("./data/merging/merged.csv")
@@ -36,6 +39,21 @@ func Cleaning() *dataframe.Dataframe {
 		df.UpdateRow(v, nil, map[string]interface{}{
 			"Production": 0,
 		})
+	}
+
+	//Dropping Country
+	df.RemoveSeries("Country")
+	df.RemoveSeries("Year")
+
+	//WRITING TO A CSV FILE
+	myFile, err := os.Create("./data/cleaning/cleaned.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err2 := exports.ExportToCSV(ctx, myFile, df)
+	if err2 != nil {
+		log.Fatal(err)
 	}
 
 	return df

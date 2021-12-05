@@ -10,10 +10,9 @@ import (
 	"os"
 
 	"github.com/go-gota/gota/dataframe"
-	"github.com/go-gota/gota/series"
 )
 
-// MERGING EVERYTHING TOGETHER WITH GOTA 
+// MERGING EVERYTHING TOGETHER WITH GOTA
 func GetAllDataframes() {
 	// LOADING THE DATA FILES
 	// df1 := GetFishBoats()  			     					//Country,Year,Total,Non-Powered Boat,Powered-Boat
@@ -36,14 +35,14 @@ func GetAllDataframes() {
 	df6 = df6.Rename("Captures", "Captures (metric tons)")
 	// df1 = df1.Rename("Total-Boats", "Total")
 
-	//JOINING DATAFRAMES HORIZONTALLY 
+	//JOINING DATAFRAMES HORIZONTALLY
 	// df1 = df1.InnerJoin(df2, "Country", "Year")
 	// df1 = df1.InnerJoin(df3, "Year", "Country")
 	// df1 = df1.InnerJoin(df4, "Year")
 	// df1 = df1.InnerJoin(df5, "Year")
 	df4 = df4.InnerJoin(df2, "Country", "Year")
 	df4 = df4.InnerJoin(df6, "Country", "Year")
-	
+
 	//ANALYZING
 	fmt.Println(df4)
 	fmt.Println(df4.Dims())
