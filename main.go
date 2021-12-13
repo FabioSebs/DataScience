@@ -5,6 +5,7 @@ import (
 	"fabrzy/data/fish_boats"
 	"fabrzy/data/fish_consumption"
 	"fabrzy/data/fish_employment"
+	"fabrzy/data/merging"
 	ml "fabrzy/machine_learning"
 	"fabrzy/webscraper"
 )
@@ -13,7 +14,7 @@ import (
 
 func main() {
 	// Checking Dataframes
-	// merging.GetAllDataframes()
+	merging.GetAllDataframes()
 	// merging.GetFishConsID()
 
 	//Visualizations

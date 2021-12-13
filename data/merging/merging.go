@@ -35,26 +35,27 @@ func GetAllDataframes() {
 	df6 = df6.Rename("Captures", "Captures (metric tons)")
 	// df1 = df1.Rename("Total-Boats", "Total")
 
+	//ANALYZING
+	fmt.Println(df2)
+	fmt.Println(df4)
+	fmt.Println(df6)
+
 	//JOINING DATAFRAMES HORIZONTALLY
-	// df1 = df1.InnerJoin(df2, "Country", "Year")
-	// df1 = df1.InnerJoin(df3, "Year", "Country")
-	// df1 = df1.InnerJoin(df4, "Year")
-	// df1 = df1.InnerJoin(df5, "Year")
-	df4 = df4.InnerJoin(df2, "Country", "Year")
-	df4 = df4.InnerJoin(df6, "Country", "Year")
+	df2 = df2.InnerJoin(df4, "Country", "Year")
+	df6 = df6.InnerJoin(df2, "Country", "Year")
 
 	//ANALYZING
-	fmt.Println(df4)
-	fmt.Println(df4.Dims())
-	fmt.Println(df4.Names())
-	fmt.Println(df4.Describe())
+	fmt.Println(df6)
+	fmt.Println(df6.Dims())
+	fmt.Println(df6.Names())
+	fmt.Println(df6.Describe())
 
 	//WRITING TO CSV
 	f, err := os.Create("./data/merging/merged.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
-	df4.WriteCSV(f)
+	df6.WriteCSV(f)
 
 }
 
