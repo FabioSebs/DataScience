@@ -43,7 +43,8 @@ func Cleaning() *df.DataFrame {
 
 	//Dropping Country
 	df.RemoveSeries("Country")
-	df.RemoveSeries("Year")
+	// df.RemoveSeries("Production")
+	// df.RemoveSeries("Year")
 
 	//WRITING TO A CSV FILE
 	myFile, err := os.Create("./data/cleaning/cleaned.csv")

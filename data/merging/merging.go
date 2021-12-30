@@ -4,7 +4,7 @@ import (
 	"fabrzy/data/fish_boats"
 	"fabrzy/data/fish_catches"
 	"fabrzy/data/fish_consumption"
-	"fabrzy/data/fish_prices"
+	"fabrzy/data/fish_employment"
 	"fmt"
 	"log"
 	"os"
@@ -16,33 +16,35 @@ import (
 func GetAllDataframes() {
 	// LOADING THE DATA FILES
 	// df1 := GetFishBoats()  			     					//Country,Year,Total,Non-Powered Boat,Powered-Boat
-	df2 := fish_consumption.GetDataframe() //Country,Code,Year,Fish
-	// df3 := fish_employment.GetDataframe() 					//Country,Year,Fisheries
-	df4 := fish_prices.GetDataframe() //Country, Code, Year, Price
+	// df2 := fish_consumption.GetDataframe() //Country,Code,Year,Fish
+	df3 := fish_employment.GetDataframe() //Country,Year,Fisheries
+	// df4 := fish_prices.GetDataframe() //Date, Price
 	// df5 := webscraper.GetDataframe()      					//Species,Status,Year,Region
 	df6 := fish_catches.GetDataframe() //Country,Code,Year,Production (metric tons),Captures (metric tons)
 
 	//DROPPING UNWANTED COLUMNS
 	// df1 = df1.Drop(3) // Non-Powered
 	// df1 = df1.Drop(4) // Powered
-	df2 = df2.Drop(1) // Code
-	df4 = df4.Drop(1) // Code
+	// df2 = df2.Drop(1) // Code
+	// df4 = df4.Drop(1) // Code
 	df6 = df6.Drop(1) // Code
+	df6 = df6.Drop(4) // Code
 
 	//RENAMING COLUMNS
-	df2 = df2.Rename("Fish-Consumption", "Fish")
+	// df2 = df2.Rename("Fish-Consumption", "Fish")
 	df6 = df6.Rename("Production", "Production (metric tons)")
 	df6 = df6.Rename("Captures", "Captures (metric tons)")
 	// df1 = df1.Rename("Total-Boats", "Total")
 
 	//ANALYZING
-	fmt.Println(df2)
-	fmt.Println(df4)
-	fmt.Println(df6)
+	// fmt.Println(df2)
+	// fmt.Println(df4)
+	// fmt.Println(df6)
 
 	//JOINING DATAFRAMES HORIZONTALLY
-	df2 = df2.InnerJoin(df4, "Country", "Year")
-	df6 = df6.InnerJoin(df2, "Country", "Year")
+	// df2 = df2.OuterJoin(df4)
+	df6 = df6.OuterJoin(df3, "Country", "Year")
+	// df3 = df3.InnerJoin(df6, "Country", "Year")
 
 	//ANALYZING
 	fmt.Println(df6)
@@ -51,7 +53,7 @@ func GetAllDataframes() {
 	fmt.Println(df6.Describe())
 
 	//WRITING TO CSV
-	f, err := os.Create("./data/merging/merged.csv")
+	f, err := os.Create("./data/merging/merged2.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
