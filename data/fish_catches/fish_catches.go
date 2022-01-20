@@ -13,7 +13,7 @@ import (
 	"github.com/go-gota/gota/dataframe"
 )
 
-func GetDataframe() dataframe.DataFrame {
+func GetDataframe(country string) dataframe.DataFrame {
 	f, err := os.Open("./data/fish_catches/captures.csv")
 
 	if err != nil {
@@ -22,7 +22,17 @@ func GetDataframe() dataframe.DataFrame {
 
 	df := dataframe.ReadCSV(f)
 
-	return df
+	filter := df.Filter(dataframe.F{0, "Country", "==", country})
+
+	f2, err := os.Create("./data/fish_catches/individualCountry.csv")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	filter.WriteCSV(f2)
+
+	return filter
 }
 
 // GO ECHART FUNCTIONS

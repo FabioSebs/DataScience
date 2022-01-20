@@ -2,6 +2,7 @@ package fish_consumption
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -38,7 +39,7 @@ func GetCountriesFC(country string) [][]string {
 }
 
 // OPENS AND READS CSV AND RETURNS DATAFRAME
-func GetDataframe() dataframe.DataFrame {
+func GetDataframe(country string) dataframe.DataFrame {
 	f, err := os.Open("./data/fish_consumption/fishconsumption.csv")
 
 	if err != nil {
@@ -47,7 +48,19 @@ func GetDataframe() dataframe.DataFrame {
 
 	df := dataframe.ReadCSV(f)
 
-	return df
+	filter := df.Filter(dataframe.F{0, "Country", "==", country})
+
+	fmt.Println(filter)
+
+	f2, err := os.Create("./data/fish_consumption/individualCountry.csv")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	filter.WriteCSV(f2)
+
+	return filter
 }
 
 // UTILITY FUNCTION THAT RETURNS 2D SLICE BASED ON COUNTRY PASSED IN

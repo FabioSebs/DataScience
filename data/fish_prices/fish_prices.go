@@ -60,6 +60,8 @@ func GetDataframe() dataframe.DataFrame {
 	}
 
 	df := dataframe.ReadCSV(f)
+
+	df.Filter()
 	return df
 }
 
