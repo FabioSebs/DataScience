@@ -25,7 +25,7 @@ func DecisionTree() {
 	fmt.Println(data)
 
 	//Model
-	model := trees.NewDecisionTreeRegressor("mae", 4)
+	model := trees.NewDecisionTreeRegressor("mae", 10)
 
 	// Training Testing Split
 	trainData, testData := base.InstancesTrainTestSplit(data, 0.50)
